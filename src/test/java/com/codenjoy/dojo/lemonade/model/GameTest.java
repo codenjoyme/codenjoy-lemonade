@@ -36,7 +36,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SampleTest {
+// TODO а точно этот тест что-то полезное тестит?
+public class GameTest {
 
     private Lemonade game;
     private Hero hero;
