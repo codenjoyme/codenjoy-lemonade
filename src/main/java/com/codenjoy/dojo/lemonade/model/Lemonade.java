@@ -33,7 +33,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class Lemonade implements GameField<Player> {
+public class Lemonade implements GameField<Player, Hero> {
 
     private List<Player> players;
     private static RandomDice dice;

@@ -38,7 +38,7 @@ import java.util.Queue;
 
 import static com.codenjoy.dojo.lemonade.services.GameSettings.Keys.LIMIT_DAYS;
 
-public class Player extends GamePlayer<Hero, GameField<Player>> {
+public class Player extends GamePlayer<Hero, GameField<Player, Hero>> {
 
     private Queue<SalesResult> history;
     private long heroRandomSeed;

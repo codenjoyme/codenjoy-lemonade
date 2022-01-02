@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 import static com.codenjoy.dojo.lemonade.services.GameSettings.Keys.LIMIT_DAYS;
 
-public class Hero extends PlayerHero<GameField<Player>> implements MessageJoystick {
+public class Hero extends PlayerHero<GameField<Player, Hero>> implements MessageJoystick {
 
     private static Pattern patternGo;
     private final ServerMessagesManager serverMessagesManager;
@@ -56,7 +56,7 @@ public class Hero extends PlayerHero<GameField<Player>> implements MessageJoysti
     }
 
     @Override
-    public void init(GameField<Player> field) {
+    public void init(GameField<Player, Hero> field) {
         super.init(field);
         clear();
     }
