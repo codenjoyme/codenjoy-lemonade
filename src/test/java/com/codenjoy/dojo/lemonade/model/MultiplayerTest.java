@@ -26,9 +26,9 @@ package com.codenjoy.dojo.lemonade.model;
 import com.codenjoy.dojo.lemonade.TestGameSettings;
 import com.codenjoy.dojo.lemonade.services.GameRunner;
 import com.codenjoy.dojo.lemonade.services.GameSettings;
-import com.codenjoy.dojo.services.Dice;
 import com.codenjoy.dojo.services.EventListener;
 import com.codenjoy.dojo.services.Game;
+import com.codenjoy.dojo.services.dice.MockDice;
 import com.codenjoy.dojo.services.multiplayer.Single;
 import com.codenjoy.dojo.services.printer.PrinterFactory;
 import com.codenjoy.dojo.utils.JsonUtils;
@@ -36,8 +36,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 // TODO а точно этот тест что-то полезное тестит?
 public class MultiplayerTest {
@@ -48,7 +48,7 @@ public class MultiplayerTest {
     private Game game1;
     private Game game2;
     private Game game3;
-    private Dice dice;
+    private MockDice dice;
     private Lemonade field;
     private GameSettings settings;
 
@@ -70,7 +70,7 @@ public class MultiplayerTest {
     @Before
     public void setup() {
         settings = new TestGameSettings();
-        dice = mock(Dice.class);
+        dice = new MockDice();
         field = new Lemonade(settings);
         GameRunner runner = new GameRunner(){
             @Override
@@ -102,8 +102,8 @@ public class MultiplayerTest {
         game3.newGame();
     }
 
-    private void dice(int x, int y) {
-        when(dice.next(anyInt())).thenReturn(x, y);
+    private void dice(Integer... next) {
+        dice.then(next);
     }
 
     private void asrtFl1(String expected) {
