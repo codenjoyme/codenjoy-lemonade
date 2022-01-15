@@ -40,9 +40,9 @@ public class Simulator {
     private int D;  // Day number
     private double A;  //Assets
     private double C;  // Cost of lemonade, cents
-    private StringBuffer statusMessages;
-    private StringBuffer reportMessages;
-    private StringBuffer morningMessages;
+    private StringBuilder statusMessages;
+    private StringBuilder reportMessages;
+    private StringBuilder morningMessages;
     private int SC;  // Weather forecast
     private double R1;
     private int R2;
@@ -59,9 +59,9 @@ public class Simulator {
         if (randomSeed == 0)
             randomSeed = System.currentTimeMillis();
         rand = new Random(randomSeed);
-        statusMessages = new StringBuffer();
-        reportMessages = new StringBuffer();
-        morningMessages = new StringBuffer();
+        statusMessages = new StringBuilder();
+        reportMessages = new StringBuilder();
+        morningMessages = new StringBuilder();
 
         reset();
     }
