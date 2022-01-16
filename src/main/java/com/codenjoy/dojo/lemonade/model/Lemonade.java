@@ -79,6 +79,11 @@ public class Lemonade implements GameField<Player, Hero> {
     }
 
     @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
     public GameSettings settings() {
         return settings;
     }
