@@ -26,7 +26,6 @@ package com.codenjoy.dojo.lemonade.model;
 import com.codenjoy.dojo.lemonade.services.GameSettings;
 import com.codenjoy.dojo.services.dice.RandomDice;
 import com.codenjoy.dojo.services.multiplayer.GameField;
-import com.codenjoy.dojo.services.printer.BoardReader;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -92,11 +91,6 @@ public class Lemonade implements GameField<Player, Hero> {
         return players.stream()
                 .map(Player::getHero)
                 .collect(toList());
-    }
-
-    @Override
-    public BoardReader<Player> reader() {
-        return null;
     }
 
     @Override
