@@ -135,7 +135,7 @@ public class ScoresTest extends AbstractScoresTest {
     }
 
     @Test
-    public void shouldStillZeroAfterDead() {
+    public void shouldNotBeLessThanZero() {
         // given
         // sets SUM_OF_PROFITS scores counting mode
         settings.integer(LIMIT_DAYS, 0)
