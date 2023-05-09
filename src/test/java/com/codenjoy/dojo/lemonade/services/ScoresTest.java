@@ -23,82 +23,134 @@ package com.codenjoy.dojo.lemonade.services;
  */
 
 import com.codenjoy.dojo.lemonade.TestGameSettings;
-import com.codenjoy.dojo.services.PlayerScores;
-import com.codenjoy.dojo.services.event.Calculator;
-import com.codenjoy.dojo.services.event.ScoresImpl;
-import org.junit.Before;
+import com.codenjoy.dojo.services.event.EventObject;
+import com.codenjoy.dojo.services.event.ScoresMap;
+import com.codenjoy.dojo.utils.scorestest.AbstractScoresTest;
 import org.junit.Test;
 
 import static com.codenjoy.dojo.lemonade.services.GameSettings.Keys.*;
-import static org.junit.Assert.assertEquals;
 
-public class ScoresTest {
+public class ScoresTest extends AbstractScoresTest {
 
-    private PlayerScores scores;
-
-    private GameSettings settings;
-
-    public void lose() {
-        scores.event(new Event(Event.Type.LOSE, 1, 0.3));
+    @Override
+    public GameSettings settings() {
+        return new TestGameSettings();
     }
 
-    public void win() {
-        scores.event(new Event(Event.Type.WIN, 0.3, 0.3));
+    @Override
+    protected Class<? extends ScoresMap> scores() {
+        return Scores.class;
     }
 
-    @Before
-    public void setup() {
-        settings = new TestGameSettings();
+    @Override
+    protected Class<? extends EventObject> events() {
+        return Event.class;
+    }
+
+    @Override
+    protected Class<? extends Enum> eventTypes() {
+        return Event.Type.class;
     }
 
     @Test
     public void shouldCollectScores() {
         // given
-        settings.integer(LIMIT_DAYS, 0); // sets SUM_OF_PROFITS scores counting mode
-        givenScores(140);
+        // sets SUM_OF_PROFITS scores counting mode
+        settings.integer(LIMIT_DAYS, 0);
 
-        // when
-        win();
-        win();
-        win();
-        win();
-
-        lose();
-
-        // then
-        assertEquals(140
-                + 4 * settings.integer(WIN_SCORE)
-                + settings.integer(LOSE_PENALTY),
-                scores.getScore());
+        // when then
+        assertEvents("100:\n" +
+                "WIN,0.3D,0.3D > +30 = 130\n" +
+                "WIN,0.3D,0.3D > +30 = 160\n" +
+                "WIN,0.3D,0.3D > +30 = 190\n" +
+                "WIN,0.3D,0.3D > +30 = 220\n" +
+                "LOSE,1D,0.3D > -100 = 120");
     }
 
-    private void givenScores(int score) {
-        scores = new ScoresImpl<>(score, new Calculator<>(new Scores(settings)));
+    @Test
+    public void shouldCollectScores_whenWin_andSumOfProfitsScoreMode() {
+        // given
+        // sets SUM_OF_PROFITS scores counting mode
+        settings.integer(LIMIT_DAYS, 0)
+                .integer(WIN_SCORE, 10);
+
+        // when then
+        assertEvents("100:\n" +
+                "WIN,0.3D,0.3D > +30 = 130\n" +
+                "WIN,0.3D,0.3D > +30 = 160");
+    }
+
+    @Test
+    public void shouldCollectScores_whenWin_andLastDayAssetsScoreMode() {
+        // given
+        // sets LAST_DAY_ASSETS scores counting mode
+        settings.integer(LIMIT_DAYS, 10)
+                .integer(WIN_SCORE, 10);
+
+        // when then
+        // increased only when assetsAfter is more than scores
+        assertEvents("100:\n" +
+                "WIN,0.3D,0.3D > +0 = 100\n" +
+                "WIN,0.3D,1.1D > +10 = 110\n" +
+                "WIN,0.3D,1.1D > +0 = 110");
+    }
+
+    @Test
+    public void shouldCollectScores_whenLose_andSumOfProfitsScoreMode() {
+        // given
+        // sets SUM_OF_PROFITS scores counting mode
+        settings.integer(LIMIT_DAYS, 0)
+                .integer(LOSE_PENALTY, -10);
+
+        // when then
+        assertEvents("100:\n" +
+                "LOSE,1D,0.3D > -100 = 0\n" +
+                "LOSE,1D,0.3D > +0 = 0");
+    }
+
+    @Test
+    public void shouldCollectScores_whenLose_andLastDayAssetsScoreMode() {
+        // given
+        // sets LAST_DAY_ASSETS scores counting mode
+        settings.integer(LIMIT_DAYS, 10)
+                .integer(LOSE_PENALTY, -10);
+
+        // when then
+        assertEvents("100:\n" +
+                "LOSE,1D,0.3D > +0 = 100\n" +
+                "LOSE,1D,0.3D > +0 = 100");
+    }
+
+    @Test
+    public void shouldCollectScores_whenBankrupt() {
+        // given
+        settings.integer(BANKRUPT_PENALTY, -10);
+
+        // when then
+        assertEvents("100:\n" +
+                "WIN,0.3D,0.3D > +30 = 130\n" +
+                "WIN,0.3D,0.3D > +30 = 160\n" +
+                "WIN,0.3D,0.3D > +30 = 190\n" +
+                "LOSE,1D,0.3D > -10 = 180");
     }
 
     @Test
     public void shouldStillZeroAfterDead() {
         // given
-        givenScores(0);
+        // sets SUM_OF_PROFITS scores counting mode
+        settings.integer(LIMIT_DAYS, 0)
+                .integer(LOSE_PENALTY, -10);
 
-        // when
-        lose();
-
-        // then
-        assertEquals(0, scores.getScore());
+        // when then
+        assertEvents("0:\n" +
+                "LOSE,1D,0.3D > +0 = 0");
     }
 
     @Test
-    public void shouldClearScore() {
-        // given
-        givenScores(0);
-
-        win();
-
-        // when
-        scores.clear();
-
-        // then
-        assertEquals(0, scores.getScore());
+    public void shouldCleanScore() {
+        assertEvents("100:\n" +
+                "WIN,0.3D,0.3D > +30 = 130\n" +
+                "(CLEAN) > -130 = 0\n" +
+                "WIN,0.3D,0.3D > +30 = 30");
     }
 }
