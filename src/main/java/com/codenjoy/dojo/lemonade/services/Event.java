@@ -23,13 +23,9 @@ package com.codenjoy.dojo.lemonade.services;
  */
 
 
-import com.codenjoy.dojo.services.event.EventObject;
+import com.codenjoy.dojo.services.event.DoubleValueEvent;
 
-public class Event implements EventObject<Event.Type, Event> {
-
-    public Type type;
-    public double profit;
-    public double assetsAfter;
+public class Event extends DoubleValueEvent<Event.Type, Double, Double> {
 
     public enum Type {
         WIN,
@@ -37,26 +33,20 @@ public class Event implements EventObject<Event.Type, Event> {
     }
 
     public Event(Type type, double profit, double assetsAfter) {
-        this.type = type;
-        this.profit = profit;
-        this.assetsAfter = assetsAfter;
+        super(type, profit, assetsAfter);
     }
 
     public double profit() {
-        return profit;
+        return value();
     }
 
     public double assetsAfter() {
-        return assetsAfter;
-    }
-
-    @Override
-    public Type type() {
-        return type;
+        return value2();
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%.2f, %.2f)", type.toString(), profit, assetsAfter);
+        return String.format("%s (%.2f, %.2f)",
+                type().toString(), profit(), assetsAfter());
     }
 }
