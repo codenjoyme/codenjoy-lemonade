@@ -1,6 +1,6 @@
 | Settings name | Action |
 |---------------|--------|
-| LOSE_PENALTY | [Score] Lose penalty |
-| LIMIT_DAYS | [Game] Limit days |
 | WIN_SCORE | [Score] Win score |
+| LOSE_PENALTY | [Score] Lose penalty |
 | BANKRUPT_PENALTY | [Score] Bankrupt penalty |
+| LIMIT_DAYS | [Game] Limit days |
